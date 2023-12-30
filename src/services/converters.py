@@ -6,12 +6,6 @@ from io import BytesIO
 from ..models.file_content import FileContent, FileData
 
 def convert_json(excel_file: UploadFile) -> FileContent:
-  # excel_data = {
-  #   'FileName': excel_file.filename,
-  #   'Size': excel_file.size,
-  #   'RowCount': 0,
-  #   'Data': []
-  # }
   excel_data = FileContent(FieldName=excel_file.filename,
                            Size=excel_file.size)
   
@@ -20,11 +14,6 @@ def convert_json(excel_file: UploadFile) -> FileContent:
     
     total_rows = 0
     for sheet in workbook.worksheets:
-      # sheet_data = {
-      #   'SheetName': sheet.title,
-      #   'RowCount': sheet.max_row - 1,
-      #   'Rows': []
-      # }
       sheet_data = FileData(SheetName=sheet.title,
                             RowCount=sheet.max_row-1)
 

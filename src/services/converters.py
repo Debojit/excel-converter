@@ -12,22 +12,22 @@ def convert_json(excel_file: UploadFile) -> Dict:
     'RowCount': 0,
     'Data': []
   }
-  file_content = BytesIO(excel_file.file.read())
-  workbook = load_workbook(file_content, read_only=True)
-  
-  total_rows = 0
-  for sheet in workbook.worksheets:
-    sheet_data = {
-      'SheetName': sheet.title,
-      'RowCount': sheet.max_row - 1,
-      'Rows': []
-    }
-    total_rows += sheet.max_row - 1
-    header_row = [cell.value.replace('_', '') for cell in sheet[1]]
-    for row in sheet.iter_rows(min_row=2, values_only=True):
-      row_data = [str(cell).strip() for cell in row]
-      sheet_data['Rows'].append(dict(zip(header_row, row_data)))
-    excel_data['Data'].append(sheet_data)
+  with BytesIO(excel_file.file.read()) as file_content:
+    workbook = load_workbook(file_content, read_only=True)
     
-  excel_data['RowCount'] = total_rows
+    total_rows = 0
+    for sheet in workbook.worksheets:
+      sheet_data = {
+        'SheetName': sheet.title,
+        'RowCount': sheet.max_row - 1,
+        'Rows': []
+      }
+      total_rows += sheet.max_row - 1
+      header_row = [cell.value.replace('_', '') for cell in sheet[1]]
+      for row in sheet.iter_rows(min_row=2, values_only=True):
+        row_data = [str(cell).strip() for cell in row]
+        sheet_data['Rows'].append(dict(zip(header_row, row_data)))
+      excel_data['Data'].append(sheet_data)
+      
+    excel_data['RowCount'] = total_rows
   return excel_data
